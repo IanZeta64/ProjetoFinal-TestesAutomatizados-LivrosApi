@@ -1,4 +1,5 @@
 package br.com.ada.projetofinaltestesautomatizados.services;
+import br.com.ada.projetofinaltestesautomatizados.exceptions.LivroDuplicadoException;
 import br.com.ada.projetofinaltestesautomatizados.exceptions.LivroNaoEncontradoException;
 import br.com.ada.projetofinaltestesautomatizados.models.LivroEntity;
 import br.com.ada.projetofinaltestesautomatizados.repositories.LivroRepository;
@@ -17,7 +18,12 @@ public class LivroServiceImpl implements LivroService{
     private final LivroRepository repository;
     @Override
     public LivroResponse salvar(LivroRequest livroRequest) {
-        return  repository.save(new LivroEntity(livroRequest)).toResponse();
+       if (!repository.existsByDataPublicacaoAndTitulo(livroRequest.dataPublicacao(), livroRequest.titulo())){
+           LivroEntity livro =  new LivroEntity(livroRequest);
+           return repository.save(livro).toResponse();
+       }else {
+           throw new LivroDuplicadoException("Livro ja cadastrado");
+       }
     }
 
     @Override
@@ -41,7 +47,8 @@ public class LivroServiceImpl implements LivroService{
         Optional<LivroEntity> livroEntityOptional = repository.findByIsbn(UUID.fromString(isbn));
         livroEntityOptional.ifPresent(livroEntity -> repository.save(livroEntity.update(livroRequest)));
         return livroEntityOptional.orElseThrow(() -> new LivroNaoEncontradoException("Livro nao encontrado")).toResponse();
-    }
+        }
+
 
     @Override
     public void deletar(String isbn) {
