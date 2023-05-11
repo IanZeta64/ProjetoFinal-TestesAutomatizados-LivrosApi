@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,22 +18,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "livro_tb")
 public class LivroEntity{
-
-    public LivroEntity(LivroRequest livroRequest) {
+    public LivroEntity(String titulo, BigDecimal preco, String resumo, String sumario, Integer numeroPaginas, LocalDate dataPublicacao) {
         this.isbn = UUID.randomUUID();
-        this.titulo = livroRequest.titulo();
-        this.preco = livroRequest.preco();
-        this.resumo = livroRequest.resumo();
-        this.sumario = livroRequest.sumario();
-        this.numeroPaginas = livroRequest.numeroPaginas();
-        this.dataPublicacao = livroRequest.dataPublicacao();
+        this.titulo = titulo;
+        this.preco = preco;
+        this.resumo = resumo;
+        this.sumario = sumario;
+        this.numeroPaginas = numeroPaginas;
+        this.dataPublicacao = dataPublicacao;
     }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private  Long id;
     @Column(name = "isbn")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID isbn;
 
     @Column(name = "titulo")
@@ -57,15 +55,16 @@ public class LivroEntity{
     private LocalDate dataPublicacao;
 
     public LivroResponse toResponse() {
-        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario, this.dataPublicacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario,
+                this.dataPublicacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
     public LivroEntity update(LivroRequest livroRequest){
-        setTitulo(livroRequest.titulo());
-        setPreco(livroRequest.preco());
-        setResumo(livroRequest.resumo());
-        setSumario(livroRequest.sumario());
-        setNumeroPaginas(livroRequest.numeroPaginas());
-        setDataPublicacao(livroRequest.dataPublicacao());
+        setTitulo(livroRequest.getTitulo());
+        setPreco(livroRequest.getPreco());
+        setResumo(livroRequest.getResumo());
+        setSumario(livroRequest.getSumario());
+        setNumeroPaginas(livroRequest.getNumeroPaginas());
+        setDataPublicacao(livroRequest.getDataPublicacao());
         return this;
     }
 

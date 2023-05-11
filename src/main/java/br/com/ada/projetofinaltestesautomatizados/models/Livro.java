@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public interface Livro {
 
-    UUID getIsbn();
-
     LivroResponse toResponse();
     LivroEntity update(LivroRequest livroRequest);
 
