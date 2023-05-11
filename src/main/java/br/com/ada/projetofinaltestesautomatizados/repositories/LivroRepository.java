@@ -20,4 +20,5 @@ public interface LivroRepository extends JpaRepository<LivroEntity, Long> {
     Boolean existsByIsbn(UUID isbn);
 
     Boolean existsByDataPublicacaoAndTitulo(LocalDate localDate, String titulo);
+
 }

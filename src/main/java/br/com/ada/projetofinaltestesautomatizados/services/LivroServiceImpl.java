@@ -6,6 +6,7 @@ import br.com.ada.projetofinaltestesautomatizados.repositories.LivroRepository;
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
 import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +17,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LivroServiceImpl implements LivroService{
     private final LivroRepository repository;
+
+
     @Override
     public LivroResponse salvar(LivroRequest livroRequest) {
-       if (!repository.existsByDataPublicacaoAndTitulo(livroRequest.dataPublicacao(), livroRequest.titulo())){
-           LivroEntity livro =  new LivroEntity(livroRequest);
+       if (!repository.existsByDataPublicacaoAndTitulo(livroRequest.getDataPublicacao(), livroRequest.getTitulo())){
+           LivroEntity livro =  livroRequest.toEntity();
            return repository.save(livro).toResponse();
        }else {
            throw new LivroDuplicadoException("Livro ja cadastrado");
@@ -44,9 +47,8 @@ public class LivroServiceImpl implements LivroService{
 
     @Override
     public LivroResponse atualizar(String isbn, LivroRequest livroRequest) {
-        Optional<LivroEntity> livroEntityOptional = repository.findByIsbn(UUID.fromString(isbn));
-        livroEntityOptional.ifPresent(livroEntity -> repository.save(livroEntity.update(livroRequest)));
-        return livroEntityOptional.orElseThrow(() -> new LivroNaoEncontradoException("Livro nao encontrado")).toResponse();
+        LivroEntity livroEntity = repository.findByIsbn(UUID.fromString(isbn)).orElseThrow(() -> new LivroNaoEncontradoException("Livro nao encontrado"));
+        return repository.save(livroEntity.update(livroRequest)).toResponse();
         }
 
 
