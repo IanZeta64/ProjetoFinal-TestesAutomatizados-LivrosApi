@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -26,6 +27,8 @@ public class LivroEntity{
         this.sumario = sumario;
         this.numeroPaginas = numeroPaginas;
         this.dataPublicacao = dataPublicacao;
+        this.criacao = Instant.now();
+        this.disponivel = true;
     }
 
     @Id
@@ -50,9 +53,14 @@ public class LivroEntity{
     private String sumario;
     @Column(name = "numero_paginas")
     private Integer numeroPaginas;
-
     @Column(name = "data_publicacao")
     private LocalDate dataPublicacao;
+    @Column(name = "criacao")
+    private Instant criacao;
+    @Column(name = "modificacao")
+    private Instant modificacao;
+    @Column(name = "disponivel")
+    private Boolean disponivel;
 
     public LivroResponse toResponse() {
         return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario,
@@ -65,6 +73,7 @@ public class LivroEntity{
         setSumario(livroRequest.getSumario());
         setNumeroPaginas(livroRequest.getNumeroPaginas());
         setDataPublicacao(livroRequest.getDataPublicacao());
+        setModificacao(Instant.now());
         return this;
     }
 
