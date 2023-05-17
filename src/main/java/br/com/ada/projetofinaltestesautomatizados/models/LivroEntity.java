@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -34,8 +36,9 @@ public class LivroEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private  Long id;
+
     @Column(name = "isbn")
-    @GeneratedValue(strategy = GenerationType.UUID)
+//    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID isbn;
 
     @Column(name = "titulo")
@@ -43,6 +46,7 @@ public class LivroEntity{
 
     @Column(name = "preco")
     private BigDecimal preco;
+
     @NotBlank(message = "O resumo é obrigatorio.")
     @Size(max = 500, message = "O resumo deve ter no máximo 500 caracteres")
     @Lob
@@ -63,7 +67,7 @@ public class LivroEntity{
     private Boolean disponivel;
 
     public LivroResponse toResponse() {
-        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario,
+        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario, this.numeroPaginas,
                 this.dataPublicacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
     public LivroEntity update(LivroRequest livroRequest){
@@ -75,6 +79,18 @@ public class LivroEntity{
         setDataPublicacao(livroRequest.getDataPublicacao());
         setModificacao(Instant.now());
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LivroEntity that)) return false;
+        return getTitulo().equals(that.getTitulo()) && getDataPublicacao().equals(that.getDataPublicacao());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitulo(), getDataPublicacao());
     }
 
 }
