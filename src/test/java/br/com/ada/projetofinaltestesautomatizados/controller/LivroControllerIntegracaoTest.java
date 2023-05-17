@@ -1,4 +1,4 @@
-package br.com.ada.projetofinaltestesautomatizados.controllerTest;
+package br.com.ada.projetofinaltestesautomatizados.controller;
 
 import br.com.ada.projetofinaltestesautomatizados.ProjetoFinalTestesAutomatizadosApplication;
 import br.com.ada.projetofinaltestesautomatizados.models.LivroEntity;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @SpringBootTest(classes = ProjetoFinalTestesAutomatizadosApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode =  DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class LivroControllerIntegracaoTest {
 
     @Autowired
@@ -34,7 +36,7 @@ public class LivroControllerIntegracaoTest {
 
     @BeforeEach
     void setUp() {
-        livroRequest = new LivroRequest("O Cortico", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2023, 06, 05));
+        livroRequest = new LivroRequest("O Cortico", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2023, 6, 5));
         livroEntity = this.livroRequest.toEntity();
         livroResponse = this.livroEntity.toResponse();
     }
