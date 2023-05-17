@@ -70,8 +70,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:36:10 jdbc[3]: exception
 =======
+=======
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 2023-05-16 20:21:40 database: flush
 org.h2.message.DbException: General error: "org.h2.mvstore.MVStoreException: The file is locked: /Users/matheuspanobianco/Desktop/ProjetoFinal-TestesAutomatizados-LivrosApi-master/livroApi.mv.db [2.1.214/7]" [50000-214]
 	at org.h2.message.DbException.get(DbException.java:212)
@@ -6845,6 +6848,9 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: /Users/matheuspa
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
 	... 135 more
 2023-05-16 21:40:08 jdbc[3]: exception
+<<<<<<< HEAD
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
+=======
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-214]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:678)
@@ -6881,7 +6887,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:36:10 jdbc[3]: exception
+=======
+2023-05-16 21:40:08 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:40:08 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -6921,7 +6931,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:37:30 jdbc[3]: exception
+=======
+2023-05-16 21:42:47 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:42:47 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -6960,7 +6974,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:37:30 jdbc[3]: exception
+=======
+2023-05-16 21:42:47 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:42:47 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7000,7 +7018,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:37:44 jdbc[3]: exception
+=======
+2023-05-16 21:45:39 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:45:39 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7039,7 +7061,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:37:44 jdbc[3]: exception
+=======
+2023-05-16 21:45:39 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:45:39 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7079,7 +7105,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:39:05 jdbc[3]: exception
+=======
+2023-05-16 21:49:39 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:49:39 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7102,7 +7132,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.invokeProxyMethod(AbstractEntityManagerFactoryBean.java:519)
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean$ManagedEntityManagerFactoryInvocationHandler.invoke(AbstractEntityManagerFactoryBean.java:733)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at jdk.proxy2/jdk.proxy2.$Proxy115.close(Unknown Source)
+=======
+	at jdk.proxy2/jdk.proxy2.$Proxy114.close(Unknown Source)
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 	at jdk.proxy2/jdk.proxy2.$Proxy114.close(Unknown Source)
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7122,7 +7156,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:108)
 	at java.base/java.lang.Thread.run(Thread.java:833)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2023-05-17 11:39:05 jdbc[3]: exception
+=======
+2023-05-16 21:49:39 jdbc[3]: exception
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 =======
 2023-05-16 21:49:39 jdbc[3]: exception
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
@@ -7146,8 +7184,11 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.invokeProxyMethod(AbstractEntityManagerFactoryBean.java:519)
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean$ManagedEntityManagerFactoryInvocationHandler.invoke(AbstractEntityManagerFactoryBean.java:733)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at jdk.proxy2/jdk.proxy2.$Proxy115.close(Unknown Source)
 =======
+=======
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 	at jdk.proxy2/jdk.proxy2.$Proxy114.close(Unknown Source)
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.destroy(AbstractEntityManagerFactoryBean.java:652)
 	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:201)
@@ -8498,6 +8539,9 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.invokeProxyMethod(AbstractEntityManagerFactoryBean.java:519)
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean$ManagedEntityManagerFactoryInvocationHandler.invoke(AbstractEntityManagerFactoryBean.java:733)
 	at jdk.proxy2/jdk.proxy2.$Proxy114.close(Unknown Source)
+<<<<<<< HEAD
+>>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
+=======
 >>>>>>> 0f09ded395b766839bea6138ea32d0bf3e0175c2
 	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.destroy(AbstractEntityManagerFactoryBean.java:652)
 	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:201)

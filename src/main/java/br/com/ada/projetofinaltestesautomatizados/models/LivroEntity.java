@@ -32,7 +32,6 @@ public class LivroEntity {
         this.criacao = Instant.now();
         this.disponivel = true;
     }
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
