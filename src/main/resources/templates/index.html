@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Livros</title>
+</head>
+<body>
+<h1>Livros</h1>
+
+<form method="get" th:action="@{/titulo}">
+    <input type="text" name="titulo"/>
+    <button type="submit">Buscar por titulo</button>
+</form>
+<form method="get" th:action="@{/isbn}">
+    <input type="text" name="isbn"/>
+    <button type="submit">Buscar por isbn</button>
+</form>
+<table>
+    <tr><th>Titulo</th><th>ISBN</th><th>Preço</th><th>Paginas</th><th>Data de publicacao</th></tr>
+    <tr th:each="livro : ${livros}">
+        <td th:text="${livro.titulo}"></td>
+        <td th:text="${livro.isbn}"></td>
+        <td th:text="${livro.preco}"></td>
+        <td th:text="${livro.paginas}"></td>
+        <td th:text="${livro.dataPublicacao}"></td>
+        <td>
+            <form method="delete" th:action="@{./livros/{isbn}(isbn=${livro.isbn})}">
+                <button type="submit">Deletar</button>
+            </form>
+        </td>
+        <td>
+            <form method="get" th:action="@{./livros/{isbn}(isbn=${livro.isbn})}">
+                <button type="submit">Editar</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<button><a href="add-livro.html">Adicionar livro</a></button>
+<button><a href="index">Voltar</a></button>
+</body>
+</html>

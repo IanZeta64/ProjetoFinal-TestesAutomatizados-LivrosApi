@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo livro</title>
+</head>
+<body>
+<h1> Novo livro </h1>
+<form th:action="@{livros}" method="post">
+  <label>titulo</label>
+  <label>
+    <input th:value="${livro.titulo}" type="text" name="titulo"/>
+  </label></br>
+  <label>preco</label>
+  <label>
+    <input th:value="${livro.preco}" type="text" name="preco"/>
+  </label></br>
+  <label>resumo</label>
+  <label>
+    <input th:value="${livro.resumo}" type="text" name="resumo"/>
+  </label></br>
+  <label>sumario</label>
+  <label>
+    <input th:value="${livro.sumario}" type="text" name="sumario"/>
+  </label></br>
+  <label>data de publicação</label>
+  <label>
+    <input th:value="${livro.dataPublicacao}" type="text" name="dataPublicacao"/>
+  </label></br>
+  <label>numero de paginas</label>
+  <label>
+    <input th:value="${livro.numeroPaginas}" type="text" name="numeroPaginas"/>
+  </label></br>
+
+  <button type="submit">Salvar</button>
+
+</form>
+</body>
+</html>

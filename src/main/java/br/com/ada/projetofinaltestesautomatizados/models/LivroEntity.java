@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "livro_tb")
-public class LivroEntity{
+public class LivroEntity {
     public LivroEntity(String titulo, BigDecimal preco, String resumo, String sumario, Integer numeroPaginas, LocalDate dataPublicacao) {
         this.isbn = UUID.randomUUID();
         this.titulo = titulo;
@@ -33,9 +35,9 @@ public class LivroEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private  Long id;
+    private Long id;
+
     @Column(name = "isbn")
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID isbn;
 
     @Column(name = "titulo")
@@ -43,6 +45,7 @@ public class LivroEntity{
 
     @Column(name = "preco")
     private BigDecimal preco;
+
     @NotBlank(message = "O resumo é obrigatorio.")
     @Size(max = 500, message = "O resumo deve ter no máximo 500 caracteres")
     @Lob
@@ -63,10 +66,11 @@ public class LivroEntity{
     private Boolean disponivel;
 
     public LivroResponse toResponse() {
-        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario,
+        return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario, this.numeroPaginas,
                 this.dataPublicacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
-    public LivroEntity update(LivroRequest livroRequest){
+
+    public LivroEntity update(LivroRequest livroRequest) {
         setTitulo(livroRequest.getTitulo());
         setPreco(livroRequest.getPreco());
         setResumo(livroRequest.getResumo());
@@ -76,20 +80,4 @@ public class LivroEntity{
         setModificacao(Instant.now());
         return this;
     }
-
 }
-//    Um título
-//    Um resumo do que vai ser encontrado no livro
-//        Um sumário de tamanho livre.
-//        Preço do livro
-//        Número de páginas
-//        Isbn(identificador do livro)
-//        Data que ele deve entrar no ar(de publicação)
-
-//    Título é obrigatório
-//        Resumo é obrigatório e tem no máximo 500 caracteres
-//        O sumário é de tamanho livre.
-//        Preço é obrigatório e o mínimo é de 20
-//        Número de páginas é obrigatória e o mínimo é de 100
-//        Isbn é obrigatório, formato livre
-//        Data que vai entrar no ar precisa ser no futuro
