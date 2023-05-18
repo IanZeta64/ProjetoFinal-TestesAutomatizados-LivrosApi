@@ -1,6 +1,7 @@
 package br.com.ada.projetofinaltestesautomatizados.controllers;
 
 import br.com.ada.projetofinaltestesautomatizados.exceptions.ExceptionHandlerControllerAdvice;
+import br.com.ada.projetofinaltestesautomatizados.exceptions.LivroNaoEncontradoException;
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
 import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
 import br.com.ada.projetofinaltestesautomatizados.services.LivroServiceImpl;
@@ -18,9 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -89,7 +88,8 @@ class LivroControllerImplTest {
     @DisplayName("Deve salvar Livro - Mock Mvc")
     void deveSalvarLivroMockMvc() throws Exception {
 
-        ArgumentCaptor<LivroRequest> requestCaptor = ArgumentCaptor.forClass(LivroRequest.class); //Usando para ignorar o atributo gerado automatico de isbn
+        ArgumentCaptor<LivroRequest> requestCaptor = ArgumentCaptor.forClass(LivroRequest.class);
+        //Usando para ignorar o atributo gerado automatico de isbn
         doReturn(livroResponse).when(service).salvar(requestCaptor.capture());
 
         String livroRequestJson =  mapper.writeValueAsString(livroRequest);
@@ -155,12 +155,13 @@ class LivroControllerImplTest {
 
     @Test
     @DisplayName("Deve atualizar livro - Mock Mvc")
-    void atualizar() throws Exception {
+    void deveAtualizarLivroPeloRequest() throws Exception {
 
         LivroRequest livroRequestAtualizar = new LivroRequest("O Cortico", BigDecimal.valueOf(22.22), "resumo2", "sumario2", 2022, LocalDate.of(2029,10,1));
         LivroResponse livroResponseAtualizar = livroRequestAtualizar.toEntity().toResponse();
         String isbn = livroResponseAtualizar.isbn().toString();
         String livroRequestJson =  mapper.writeValueAsString(livroRequestAtualizar);
+        String livrResponseJson =  mapper.writeValueAsString(livroResponseAtualizar);
 
         ArgumentCaptor<LivroRequest> requestCaptor = ArgumentCaptor.forClass(LivroRequest.class); //Usando para ignorar o atributo gerado automatico de isbn
         doReturn(livroResponseAtualizar).when(service).atualizar(any(), requestCaptor.capture());
@@ -169,6 +170,7 @@ class LivroControllerImplTest {
                         .contentType(MediaType.APPLICATION_JSON).content(livroRequestJson))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(livrResponseJson))
                 .andExpect(jsonPath("$.titulo").value("O Cortico"))
                 .andExpect(jsonPath("$.preco").value(22.22))
                 .andExpect(jsonPath("$.isbn").value(isbn))
@@ -183,6 +185,15 @@ class LivroControllerImplTest {
 
 
     @Test
-    void deletar() {
+    @DisplayName("Deve deletar livro - Mock Mvc")
+    void deveDeletarLivroPeloIsbn() throws Exception {
+        String isbn = livroResponse.isbn().toString();
+        doNothing().when(service).deletar(any());
+
+        this.mockMvc.perform(delete("/api/v1/livros/{isbn}", isbn))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        verify(service).deletar(isbn);
     }
 }
