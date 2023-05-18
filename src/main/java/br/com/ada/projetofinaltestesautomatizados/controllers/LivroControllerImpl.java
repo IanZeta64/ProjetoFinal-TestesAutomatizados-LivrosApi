@@ -24,7 +24,7 @@ public class LivroControllerImpl implements LivroController {
     @Override
     @ResponseStatus(HttpStatus.OK)
     public LivroResponse buscarPorIsbn(String isbn) {
-        return service.buscarPorId(isbn);
+        return service.buscarPorIsbn(isbn);
     }
 
     @Override

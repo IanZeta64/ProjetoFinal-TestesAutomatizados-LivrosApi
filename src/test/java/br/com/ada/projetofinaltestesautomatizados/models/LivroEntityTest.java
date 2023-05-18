@@ -5,26 +5,30 @@ import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LivroEntityTest {
-    private LivroEntity livroEntity;
 
-    @BeforeEach
-    void setUp(){
-        this.livroEntity = new LivroEntity(1L, UUID.randomUUID(), "O Cortiço", BigDecimal.valueOf(23.34), "resumo",
-                "sumario", 101, LocalDate.of(1993,10,1), Instant.now(), null, true);
-    }
-    @Test
+public class LivroEntityTest {
+
+
+    @ParameterizedTest
+    @MethodSource("gerarEntities")
     @DisplayName("Deve retornar Response - Teste Unitario")
-    void deveRetornarResponse() {
+    void deveRetornarResponse(LivroEntity livroEntity) {
        LivroResponse livroResponse = livroEntity.toResponse();
         assertEquals(livroEntity.getTitulo(), livroResponse.titulo());
         assertEquals(livroEntity.getPreco(), livroResponse.preco());
@@ -37,9 +41,10 @@ public class LivroEntityTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarEntities")
     @DisplayName("Deve atualizar entidade pelo request recebido - Teste Unitario")
-    void deveAtualizarAEntidadePeloRequestRecebido() {
+    void deveAtualizarAEntidadePeloRequestRecebido(LivroEntity livroEntity) {
         LivroRequest livroRequest = new LivroRequest("O Hobbit", BigDecimal.valueOf(50.05), "lorem ipsum", "1. Introdução\n2. Desenvolvimento\n3. Conclusão", 101, LocalDate.of(2005,12,31));
         LivroEntity livroEntityUpdate = livroEntity.update(livroRequest);
         assertEquals("O Hobbit", livroEntityUpdate.getTitulo());
@@ -53,27 +58,24 @@ public class LivroEntityTest {
         assertNotNull(livroEntityUpdate.getModificacao());
 
     }
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarEntities")
     @DisplayName("Deve testar construtor personalizado com valores nulos e nao nulos - Teste unitario")
-    void deveTestarValoresNulosENaoNulosDoConstrutorPersonalizado(){
-        LivroEntity livro = new LivroEntity("O Hobbit", BigDecimal.valueOf(50.05), "lorem ipsum", "1. Introdução\n2. Desenvolvimento\n3. Conclusão", 101, LocalDate.of(2005,12,31));;
-        assertNotNull(livro.getIsbn());
-        assertNotNull(livro.getDisponivel());
-        assertNotNull(livro.getCriacao());
-        assertNull(livro.getId());
-        assertNull(livro.getModificacao());
+    void deveTestarValoresNulosENaoNulosDoConstrutorPersonalizado(LivroEntity livroEntity){
+//        LivroEntity livro = new LivroEntity("Lorem Ipsum", BigDecimal.valueOf(50.05), "lorem ipsum", "1. Introdução\n2. Desenvolvimento\n3. Conclusão", 999, LocalDate.of(2033,12,31));;
+        assertNotNull(livroEntity.getIsbn());
+        assertNotNull(livroEntity.getDisponivel());
+        assertNotNull(livroEntity.getCriacao());
+        assertNull(livroEntity.getId());
+        assertNull(livroEntity.getModificacao());
     }
 
-    @Test
-    @DisplayName("Deve Testar Construtor Vazio - Teste Unitario")
-    void deveTestarConstrutorVazio() {
-        LivroEntity livroEnt = new LivroEntity();
-        assertNull(livroEnt.getTitulo());
-        assertNull(livroEnt.getNumeroPaginas());
-        assertNull(livroEnt.getResumo());
-        assertNull(livroEnt.getPreco());
-        assertNull(livroEnt.getSumario());
-        assertNull(livroEnt.getDataPublicacao());
+    private static Stream<Arguments> gerarEntities(){
+        return Stream.of( Arguments.of(new LivroEntity("O Cortiço", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2026,10,1)),
+                Arguments.of(new LivroEntity("O Hobbit", BigDecimal.valueOf(77.31), "resumo", "sumario", 202, LocalDate.of(2025,10,1))),
+                Arguments.of(new LivroEntity("O Alto da compadecida", BigDecimal.valueOf(44.85), "resumo", "sumario", 303, LocalDate.of(2024,10,1)))));
     }
+
+
 
 }

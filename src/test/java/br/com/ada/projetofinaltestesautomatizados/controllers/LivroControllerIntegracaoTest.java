@@ -1,4 +1,4 @@
-package br.com.ada.projetofinaltestesautomatizados.controller;
+package br.com.ada.projetofinaltestesautomatizados.controllers;
 
 import br.com.ada.projetofinaltestesautomatizados.ProjetoFinalTestesAutomatizadosApplication;
 import br.com.ada.projetofinaltestesautomatizados.models.LivroEntity;
@@ -31,14 +31,10 @@ public class LivroControllerIntegracaoTest {
     @Autowired
     private MockMvc mockMvc;
     private LivroRequest livroRequest;
-    private LivroEntity livroEntity;
-    private LivroResponse livroResponse;
 
     @BeforeEach
     void setUp() {
         livroRequest = new LivroRequest("O Cortico", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2023, 6, 5));
-        livroEntity = this.livroRequest.toEntity();
-        livroResponse = this.livroEntity.toResponse();
     }
 
     @Test

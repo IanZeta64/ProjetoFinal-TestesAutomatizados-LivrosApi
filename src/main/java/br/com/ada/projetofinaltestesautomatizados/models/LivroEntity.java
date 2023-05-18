@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "livro_tb")
-public class LivroEntity{
+public class LivroEntity {
     public LivroEntity(String titulo, BigDecimal preco, String resumo, String sumario, Integer numeroPaginas, LocalDate dataPublicacao) {
         this.isbn = UUID.randomUUID();
         this.titulo = titulo;
@@ -35,7 +35,7 @@ public class LivroEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private  Long id;
+    private Long id;
 
     @Column(name = "isbn")
 //    @GeneratedValue(strategy = GenerationType.UUID)
@@ -70,7 +70,8 @@ public class LivroEntity{
         return new LivroResponse(this.isbn, this.titulo, this.preco, this.resumo, this.sumario, this.numeroPaginas,
                 this.dataPublicacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
-    public LivroEntity update(LivroRequest livroRequest){
+
+    public LivroEntity update(LivroRequest livroRequest) {
         setTitulo(livroRequest.getTitulo());
         setPreco(livroRequest.getPreco());
         setResumo(livroRequest.getResumo());
@@ -84,15 +85,14 @@ public class LivroEntity{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LivroEntity that)) return false;
-        return getTitulo().equals(that.getTitulo()) && getDataPublicacao().equals(that.getDataPublicacao());
+        if (!(o instanceof LivroEntity livro)) return false;
+        return getTitulo().equals(livro.getTitulo()) && getDataPublicacao().equals(livro.getDataPublicacao());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getTitulo(), getDataPublicacao());
     }
-
 }
 //    Um título
 //    Um resumo do que vai ser encontrado no livro

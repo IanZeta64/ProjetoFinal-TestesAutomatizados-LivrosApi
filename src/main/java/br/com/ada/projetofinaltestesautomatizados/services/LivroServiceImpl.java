@@ -29,7 +29,7 @@ public class LivroServiceImpl implements LivroService{
     }
 
     @Override
-    public LivroResponse buscarPorId(String isbn) {
+    public LivroResponse buscarPorIsbn(String isbn) {
         return repository.findByIsbnAndDisponivelTrue(UUID.fromString(isbn))
                 .orElseThrow(() -> new LivroNaoEncontradoException("Livro nao encontrado")).toResponse();
     }
