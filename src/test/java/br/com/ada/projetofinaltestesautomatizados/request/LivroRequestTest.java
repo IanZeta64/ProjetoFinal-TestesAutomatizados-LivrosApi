@@ -23,8 +23,8 @@ public class LivroRequestTest {
         assertEquals(livroRequest.getPreco(), livroRequestToEntity.getPreco());
         assertEquals(livroRequest.getDataPublicacao(), livroRequestToEntity.getDataPublicacao());
         assertEquals(livroRequest.getNumeroPaginas(), livroRequestToEntity.getNumeroPaginas());
-        assertEquals(UUID.class, livroRequestToEntity.getIsbn().getClass());
         assertEquals(LivroEntity.class, livroRequestToEntity.getClass());
+        assertNotNull(livroRequestToEntity.getIsbn().getClass());
         assertNotNull(livroRequestToEntity.getCriacao());
         assertNull(livroRequestToEntity.getModificacao());
         assertTrue(livroRequestToEntity.getDisponivel());

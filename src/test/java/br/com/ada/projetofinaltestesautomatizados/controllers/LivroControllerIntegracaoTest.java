@@ -1,8 +1,7 @@
 package br.com.ada.projetofinaltestesautomatizados.controllers;
 import br.com.ada.projetofinaltestesautomatizados.ProjetoFinalTestesAutomatizadosApplication;
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
-import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.*;

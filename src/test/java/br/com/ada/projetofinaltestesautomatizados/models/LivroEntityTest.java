@@ -27,7 +27,7 @@ public class LivroEntityTest {
         assertEquals(livroEntity.getDataPublicacao(), LocalDate.parse(livroResponse.dataPublicacao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         assertEquals(livroEntity.getIsbn(), livroResponse.isbn());
         assertEquals(livroEntity.getNumeroPaginas(), livroResponse.numeroPaginas());
-        assertEquals(LivroResponse.class, livroResponse.getClass());
+        assertNotNull(livroResponse.isbn());
 
     }
 
@@ -37,14 +37,14 @@ public class LivroEntityTest {
     void deveAtualizarAEntidadePeloRequestRecebido(LivroEntity livroEntity) {
         LivroRequest livroRequest = new LivroRequest("O Hobbit", BigDecimal.valueOf(50.05), "lorem ipsum", "1. Introdução\n2. Desenvolvimento\n3. Conclusão", 101, LocalDate.of(2005,12,31));
         LivroEntity livroEntityUpdate = livroEntity.update(livroRequest);
-        assertEquals("O Hobbit", livroEntityUpdate.getTitulo());
-        assertEquals(BigDecimal.valueOf(50.05), livroEntityUpdate.getPreco());
-        assertEquals("1. Introdução\n2. Desenvolvimento\n3. Conclusão", livroEntityUpdate.getSumario());
-        assertEquals("lorem ipsum", livroEntityUpdate.getResumo());
-        assertEquals(LocalDate.of(2005,12,31), livroEntityUpdate.getDataPublicacao());
-        assertEquals(101, livroEntityUpdate.getNumeroPaginas());
+        assertEquals(livroRequest.getTitulo(), livroEntityUpdate.getTitulo());
+        assertEquals(livroRequest.getPreco(), livroEntityUpdate.getPreco());
+        assertEquals(livroRequest.getSumario(), livroEntityUpdate.getSumario());
+        assertEquals(livroRequest.getResumo(), livroEntityUpdate.getResumo());
+        assertEquals(livroRequest.getDataPublicacao(), livroEntityUpdate.getDataPublicacao());
+        assertEquals(livroRequest.getNumeroPaginas(), livroEntityUpdate.getNumeroPaginas());
         assertEquals(livroEntity.getCriacao(), livroEntityUpdate.getCriacao());
-        assertEquals(true, livroEntityUpdate.getDisponivel());
+        assertTrue(livroEntityUpdate.getDisponivel());
         assertNotNull(livroEntityUpdate.getModificacao());
 
     }
