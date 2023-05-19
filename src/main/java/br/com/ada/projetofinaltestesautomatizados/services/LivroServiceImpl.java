@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -31,7 +32,7 @@ public class LivroServiceImpl implements LivroService{
     @Override
     public LivroResponse buscarPorIsbn(String isbn) {
         return repository.findByIsbnAndDisponivelTrue(UUID.fromString(isbn))
-                .orElseThrow(() -> new LivroNaoEncontradoException("Livro nao encontrado")).toResponse();
+                .orElseThrow(() -> new LivroNaoEncontradoException("Livro não encontrado")).toResponse();
     }
 
     @Override
@@ -53,11 +54,9 @@ public class LivroServiceImpl implements LivroService{
 
     @Override
     public void deletar(String isbn) {
-        repository.findByIsbnAndDisponivelTrue(UUID.fromString(isbn))
-                .ifPresentOrElse(livroEntity -> {livroEntity.setDisponivel(false);
-                    repository.save(livroEntity);}
-                    , () -> {
-                    throw new LivroNaoEncontradoException("Livro nao Encontrado");
-                });
+        LivroEntity livroEntity = repository.findByIsbnAndDisponivelTrue(UUID.fromString(isbn))
+                .orElseThrow(() -> new LivroNaoEncontradoException("Livro não encontrado"));
+                    livroEntity.setDisponivel(false);
+                    repository.save(livroEntity);;
     }
 }

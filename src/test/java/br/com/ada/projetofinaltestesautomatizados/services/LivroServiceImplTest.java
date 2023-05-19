@@ -6,6 +6,7 @@ import br.com.ada.projetofinaltestesautomatizados.models.LivroEntity;
 import br.com.ada.projetofinaltestesautomatizados.repositories.LivroRepository;
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
 import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,7 +49,8 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void salvar(LivroRequest livroRequest) {
+    @DisplayName("Deve salvar livro - Service Mock")
+    void deveSalvarLivro(LivroRequest livroRequest) {
 
         doReturn(livroRequest.toEntity()).when(livroRepository).save(any(LivroEntity.class));
         LivroResponse livroRetornado = livroService.salvar(livroRequest);
@@ -63,21 +65,16 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void deveLancarExcecaoSalvarDuplicado() {
-        LivroRequest livroRequest = new LivroRequest();
-        doReturn(true).when(livroRepository).existsByDataPublicacaoAndTituloAndDisponivelTrue(any(), any());
+    @DisplayName("Deve lancar Exceção ao salvar Livro Duplicado - Service Mock")
+    void deveLancarExcecaoSalvarDuplicado(LivroRequest livroRequest) {
+        doThrow(LivroDuplicadoException.class).when(livroRepository).save(any(LivroEntity.class));
         assertThrows(LivroDuplicadoException.class, () -> livroService.salvar(livroRequest));
     }
-//    @ParameterizedTest
-//    @MethodSource("gerarRequests")
-//    void deveLancarExcecaoSalvarDuplicado(LivroRequest livroRequest) {
-//        doThrow(LivroDuplicadoException.class).when(livroRepository).save(any(LivroEntity.class));
-//        assertThrows(LivroDuplicadoException.class, () -> livroService.salvar(livroRequest));
-//    }
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void buscarPorIsbn(LivroRequest livroRequest) {
+    @DisplayName("Deve encontrar Livro por ISBN - Service mock")
+    void deveBuscarLivroPorIsbn(LivroRequest livroRequest) {
         LivroEntity livroEntity = livroRequest.toEntity();
         doReturn(Optional.of(livroEntity)).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
         LivroResponse livroRetornado = livroService.buscarPorIsbn(livroEntity.getIsbn().toString());
@@ -92,6 +89,7 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarUUID")
+    @DisplayName("Deve lancar Exceção livro nao encontrado - Service mock")
     void deveLancarExcecaoBuscaIsbn(String isbn){
         doThrow(LivroNaoEncontradoException.class).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
         assertThrows(LivroNaoEncontradoException.class, () -> livroService.buscarPorIsbn(isbn));
@@ -99,7 +97,8 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void buscarPorTitulo(LivroRequest livroRequest) {
+    @DisplayName("Deve encontrar Livro por parte do tiulo - Service mock")
+    void deveBuscarPorTitulo(LivroRequest livroRequest) {
 
         LivroEntity livroEntity = livroRequest.toEntity();
         doReturn(List.of(livroEntity)).when(livroRepository).findByTituloStartingWithAndDisponivelTrue(anyString());
@@ -116,7 +115,8 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void buscarTodos(LivroRequest livroRequest) {
+    @DisplayName("Deve buscar todos os livros salvos - Service mock")
+    void deveBuscarTodosOsLivros(LivroRequest livroRequest) {
 
         doReturn(List.of(livroRequest.toEntity())).when(livroRepository).findAllByDisponivelTrue();
         List<LivroResponse> livrosRetornados = livroService.buscarTodos();
@@ -133,7 +133,8 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void atualizar(LivroRequest livroRequest) {
+    @DisplayName("Deve atualizar livro - Service mock")
+    void deveAtualizarLivro(LivroRequest livroRequest) {
 
         LivroEntity livroEntity = livroRequest.toEntity();
         LivroRequest livroRequestAtualizado = new LivroRequest("O Cortico DOIS", BigDecimal.valueOf(22.22), "resumo2", "sumario2", 2022, LocalDate.of(2029,10,1));
@@ -153,7 +154,8 @@ class LivroServiceImplTest {
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
-    void deletar(LivroRequest livroRequest) {
+    @DisplayName("Deve deletar livro - Service mock")
+    void deveDeletarLivro(LivroRequest livroRequest) {
         LivroEntity livroEntity = livroRequest.toEntity();
         assertTrue(livroEntity.getDisponivel());
         doReturn(Optional.of(livroEntity)).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
@@ -161,20 +163,11 @@ class LivroServiceImplTest {
         livroService.deletar(livroEntity.getIsbn().toString());
         assertFalse(livroEntity.getDisponivel());
     }
-
     @ParameterizedTest
-    @MethodSource("gerarRequests")
-    void deveLancarExcecaoLivroNaoEncontrado(LivroRequest livroRequest) {
-        LivroEntity livroEntity = livroRequest.toEntity();
-        doReturn(Optional.empty()).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
-        assertThrows(LivroNaoEncontradoException.class, () -> livroService.deletar(livroEntity.getIsbn().toString()));
+    @MethodSource("gerarUUID")
+    @DisplayName("Deve lancar Exceção livro nao encontrado - Service mock")
+    void deveLancarExcecaoDeletar(String isbn){
+        doThrow(LivroNaoEncontradoException.class).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
+        assertThrows(LivroNaoEncontradoException.class, () -> livroService.deletar(isbn));
     }
-
-//    @ParameterizedTest
-//    @MethodSource("gerarRequests")
-//    void deletarLivroNaoEncontradoException(LivroRequest livroRequest) {
-//        LivroEntity livroEntity = livroRequest.toEntity();
-//        doThrow(LivroNaoEncontradoException.class).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
-//        assertThrows(LivroNaoEncontradoException.class, () -> livroService.deletar(livroEntity.getIsbn().toString()));
-//    }
 }
