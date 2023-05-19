@@ -37,16 +37,15 @@ public class LivroControllerIntegracaoTest {
 
     @Autowired
     private MockMvc mockMvc;
-    private LivroRequest livroRequest;
+
     private ObjectMapper mapper;
-    private String livroRequestJson;
+
 
     @BeforeEach
-    void setUp() throws JsonProcessingException {
-        livroRequest = new LivroRequest("O Cortico", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2023, 6, 5));
+    void setUp() {
         this.mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        this.livroRequestJson = mapper.writeValueAsString(this.livroRequest);
+
     }
 
     @ParameterizedTest

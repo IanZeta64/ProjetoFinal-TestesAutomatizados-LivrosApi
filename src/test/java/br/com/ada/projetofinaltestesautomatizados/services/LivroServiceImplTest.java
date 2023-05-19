@@ -54,13 +54,9 @@ class LivroServiceImplTest {
         doReturn(livroRequest.toEntity()).when(livroRepository).save(any(LivroEntity.class));
         LivroResponse livroRetornado = livroService.salvar(livroRequest);
 
-        assertEquals(livroRequest.getTitulo(), livroRetornado.titulo());
-        assertEquals(livroRequest.getPreco(), livroRetornado.preco());
-        assertEquals(livroRequest.getResumo(), livroRetornado.resumo());
-        assertEquals(livroRequest.getSumario(), livroRetornado.sumario());
-        assertEquals(livroRequest.getNumeroPaginas(), livroRetornado.numeroPaginas());
-        assertEquals(livroRequest.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+        assertTrue(assertEqualsMethod(livroRequest, livroRetornado));
     }
+
 
     @ParameterizedTest
     @MethodSource("gerarRequests")
@@ -78,12 +74,7 @@ class LivroServiceImplTest {
         doReturn(Optional.of(livroEntity)).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
         LivroResponse livroRetornado = livroService.buscarPorIsbn(livroEntity.getIsbn().toString());
 
-        assertEquals(livroRequest.getTitulo(), livroRetornado.titulo());
-        assertEquals(livroRequest.getPreco(), livroRetornado.preco());
-        assertEquals(livroRequest.getResumo(), livroRetornado.resumo());
-        assertEquals(livroRequest.getSumario(), livroRetornado.sumario());
-        assertEquals(livroRequest.getNumeroPaginas(), livroRetornado.numeroPaginas());
-        assertEquals(livroRequest.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+        assertTrue(assertEqualsMethod(livroRequest, livroRetornado));
     }
 
     @ParameterizedTest
@@ -103,12 +94,7 @@ class LivroServiceImplTest {
         doReturn(List.of(livroEntity)).when(livroRepository).findByTituloStartingWithAndDisponivelTrue(anyString());
         List<LivroResponse> livrosRetornados = livroService.buscarPorTitulo(livroEntity.getTitulo().substring(0,3));
         for (LivroResponse livroRetornado : livrosRetornados) {
-            assertEquals(livroRequest.getTitulo(), livroRetornado.titulo());
-            assertEquals(livroRequest.getPreco(), livroRetornado.preco());
-            assertEquals(livroRequest.getResumo(), livroRetornado.resumo());
-            assertEquals(livroRequest.getSumario(), livroRetornado.sumario());
-            assertEquals(livroRequest.getNumeroPaginas(), livroRetornado.numeroPaginas());
-            assertEquals(livroRequest.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+            assertTrue(assertEqualsMethod(livroRequest, livroRetornado));
         }
     }
 
@@ -121,12 +107,7 @@ class LivroServiceImplTest {
         List<LivroResponse> livrosRetornados = livroService.buscarTodos();
 
         for (LivroResponse livroRetornado : livrosRetornados) {
-            assertEquals(livroRequest.getTitulo(), livroRetornado.titulo());
-            assertEquals(livroRequest.getPreco(), livroRetornado.preco());
-            assertEquals(livroRequest.getResumo(), livroRetornado.resumo());
-            assertEquals(livroRequest.getSumario(), livroRetornado.sumario());
-            assertEquals(livroRequest.getNumeroPaginas(), livroRetornado.numeroPaginas());
-            assertEquals(livroRequest.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+            assertTrue(assertEqualsMethod(livroRequest, livroRetornado));
         }
     }
 
@@ -143,12 +124,7 @@ class LivroServiceImplTest {
         LivroResponse livroRetornado = livroService.atualizar(livroEntity.getIsbn().toString(),livroRequestAtualizado);
 
         assertEquals(livroEntity.getIsbn(), livroRetornado.isbn());
-        assertEquals(livroRequestAtualizado.getTitulo(), livroRetornado.titulo());
-        assertEquals(livroRequestAtualizado.getPreco(), livroRetornado.preco());
-        assertEquals(livroRequestAtualizado.getResumo(), livroRetornado.resumo());
-        assertEquals(livroRequestAtualizado.getSumario(), livroRetornado.sumario());
-        assertEquals(livroRequestAtualizado.getNumeroPaginas(), livroRetornado.numeroPaginas());
-        assertEquals(livroRequestAtualizado.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+        assertTrue(assertEqualsMethod(livroRequestAtualizado, livroRetornado));
     }
 
     @ParameterizedTest
@@ -168,5 +144,19 @@ class LivroServiceImplTest {
     void deveLancarExcecaoDeletar(String isbn){
         doThrow(LivroNaoEncontradoException.class).when(livroRepository).findByIsbnAndDisponivelTrue(any(UUID.class));
         assertThrows(LivroNaoEncontradoException.class, () -> livroService.deletar(isbn));
+    }
+
+    private static boolean assertEqualsMethod(LivroRequest livroRequest, LivroResponse livroRetornado) {
+        try {
+            assertEquals(livroRequest.getTitulo(), livroRetornado.titulo());
+            assertEquals(livroRequest.getPreco(), livroRetornado.preco());
+            assertEquals(livroRequest.getResumo(), livroRetornado.resumo());
+            assertEquals(livroRequest.getSumario(), livroRetornado.sumario());
+            assertEquals(livroRequest.getNumeroPaginas(), livroRetornado.numeroPaginas());
+            assertEquals(livroRequest.getDataPublicacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), livroRetornado.dataPublicacao());
+            return true;
+        } catch (AssertionError e) {
+            return false;
+        }
     }
 }

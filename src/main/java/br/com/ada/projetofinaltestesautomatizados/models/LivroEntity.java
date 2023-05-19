@@ -95,18 +95,3 @@ public class LivroEntity {
         return Objects.hash(getTitulo(), getDataPublicacao());
     }
 }
-//    Um título
-//    Um resumo do que vai ser encontrado no livro
-//        Um sumário de tamanho livre.
-//        Preço do livro
-//        Número de páginas
-//        Isbn(identificador do livro)
-//        Data que ele deve entrar no ar(de publicação)
-
-//    Título é obrigatório
-//        Resumo é obrigatório e tem no máximo 500 caracteres
-//        O sumário é de tamanho livre.
-//        Preço é obrigatório e o mínimo é de 20
-//        Número de páginas é obrigatória e o mínimo é de 100
-//        Isbn é obrigatório, formato livre
-//        Data que vai entrar no ar precisa ser no futuro
