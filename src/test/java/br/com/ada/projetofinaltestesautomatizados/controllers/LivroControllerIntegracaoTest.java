@@ -6,26 +6,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -52,17 +49,18 @@ public class LivroControllerIntegracaoTest {
         this.livroRequestJson = mapper.writeValueAsString(this.livroRequest);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve adicionar um livro - Teste Integração")
-    void deveAdicionarUmLivroMockMvc() throws Exception {
+    void deveAdicionarUmLivroMockMvc(LivroRequest livroRequest) throws Exception {
 
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
         mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(livroRequestJson))
                 .andDo(print())
-
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.titulo").value("O Cortico"));
+                .andExpect(jsonPath("$.titulo").value(livroRequest.getTitulo()));
 
         mockMvc.perform(get("/api/v1/livros"))
                 .andDo(print())
@@ -70,10 +68,12 @@ public class LivroControllerIntegracaoTest {
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve remover um livro - Teste Integração")
-    void deveRemoverUmLivroMockMvc() throws Exception {
+    void deveRemoverUmLivroMockMvc(LivroRequest livroRequest) throws Exception {
 
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
         var mvcResult =
                 mockMvc.perform(post("/api/v1/livros")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ public class LivroControllerIntegracaoTest {
                         .andDo(print())
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.titulo")
-                                .value("O Cortico"))
+                                .value(livroRequest.getTitulo()))
                         .andReturn();
 
         mockMvc.perform(get("/api/v1/livros"))
@@ -90,6 +90,7 @@ public class LivroControllerIntegracaoTest {
                 .andExpect(jsonPath("$").isNotEmpty());
 
         var livroResponseRecuperado = mapper.readValue(mvcResult.getResponse().getContentAsString(), LivroResponse.class);
+
         mockMvc.perform(delete("/api/v1/livros/{isbn}", livroResponseRecuperado.isbn().toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(livroRequestJson))
@@ -104,10 +105,12 @@ public class LivroControllerIntegracaoTest {
                 .andExpect(jsonPath("$").isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve buscar livros por ISBN - Teste Integração")
-    void deveBuscarLivrosPorIsbn() throws Exception {
+    void deveBuscarLivrosPorIsbn(LivroRequest livroRequest) throws Exception {
 
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
        MvcResult mvcResult = mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(livroRequestJson))
@@ -125,10 +128,11 @@ public class LivroControllerIntegracaoTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve buscar livros por titulo - Teste Integração")
-    void deveBuscarLivrosPorTitulo() throws Exception {
-
+    void deveBuscarLivrosPorTitulo(LivroRequest livroRequest) throws Exception {
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
         mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(livroRequestJson))
@@ -142,10 +146,11 @@ public class LivroControllerIntegracaoTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve atualizar um livro - Teste Integração")
-    void deveAtualizarUmLivroMockMvc() throws Exception {
-
+    void deveAtualizarUmLivroMockMvc(LivroRequest livroRequest) throws Exception {
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
         var mvcResult =
                 mockMvc.perform(post("/api/v1/livros")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +158,7 @@ public class LivroControllerIntegracaoTest {
                         .andDo(print())
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.titulo")
-                                .value("O Cortico"))
+                                .value(livroRequest.getTitulo()))
                         .andReturn();
 
         mockMvc.perform(get("/api/v1/livros"))
@@ -181,16 +186,17 @@ public class LivroControllerIntegracaoTest {
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve receber mensagem de livro ja dacastrado e retornar erro 409 - Teste Intgracao")
-    void deveRecebermensagemdeLivroCadastrado() throws Exception {
-
+    void deveRecebermensagemdeLivroCadastrado(LivroRequest livroRequest) throws Exception {
+        String livroRequestJson = mapper.writeValueAsString(livroRequest);
             mockMvc.perform(post("/api/v1/livros")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(livroRequestJson))
                     .andDo(print())
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.titulo").value("O Cortico"));
+                    .andExpect(jsonPath("$.titulo").value(livroRequest.getTitulo()));
 
             mockMvc.perform(get("/api/v1/livros"))
                     .andDo(print())
@@ -206,30 +212,24 @@ public class LivroControllerIntegracaoTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarUUID")
     @DisplayName("Deve receber mensagem de livro ja nao encontrado e retornar erro 404 - Teste Intgracao")
-    void deveRecebermensagemdeLivroNaoEncontrado() throws Exception {
+    void deveRecebermensagemdeLivroNaoEncontrado(String isbn) throws Exception {
 
-        mockMvc.perform(get("/api/v1/livros/{isbn}", UUID.randomUUID().toString()))
+        mockMvc.perform(get("/api/v1/livros/{isbn}", isbn))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value("Livro não encontrado"));
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequestsInvalidos")
     @DisplayName("Deve receber mensagem de campo invalido por valores invalidos - Teste Intgracao")
-    void deveRecebermensagemdeCampoInvalidoPorValoresInvalidos() throws Exception {
+    void deveRecebermensagemdeCampoInvalidoPorValoresInvalidos(LivroRequest livroRequestSemValidacao) throws Exception {
 
-        LivroRequest livroRequestSemValidacao = new LivroRequest("O Hobbit", BigDecimal.valueOf(5.31),
-                "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
-                        " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
-                        " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
-                        " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
-                        " velit sed ullamcorper morbi tincidunt ornare massa eget egestas",
-
-                "sumario", 99, LocalDate.of(2005, 10, 1));
-        livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
+        String livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
 
        var mvcResult = mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -248,12 +248,12 @@ public class LivroControllerIntegracaoTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequestsVazios")
     @DisplayName("Deve receber mensagem de campo invalido por campos vazios - Teste Intgracao")
-    void deveRecebermensagemdeCampoInvalidoPorCcamposVazios() throws Exception {
+    void deveRecebermensagemdeCampoInvalidoPorCcamposVazios(LivroRequest livroRequestSemValidacao) throws Exception {
 
-        LivroRequest livroRequestSemValidacao = new LivroRequest();
-        livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
+        String livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
 
         var mvcResult = mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -270,6 +270,41 @@ public class LivroControllerIntegracaoTest {
             assertEquals(errosEsperados.get(i), errosCapturados.get(i));
         }
     }
+
+    private static Stream<Arguments> gerarUUID() {
+        return Stream.of(Arguments.of(UUID.randomUUID().toString()), Arguments.of(UUID.randomUUID().toString()), Arguments.of(UUID.randomUUID().toString()));
+    }
+
+    private static Stream<Arguments> gerarRequests() {
+        return Stream.of(Arguments.of(new LivroRequest("O Cortiço", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2026, 10, 1))),
+                Arguments.of(new LivroRequest("O Hobbit", BigDecimal.valueOf(77.31), "resumo", "sumario", 202, LocalDate.of(2025, 10, 1))),
+                Arguments.of(new LivroRequest("O Alto da compadecida", BigDecimal.valueOf(44.85), "resumo", "sumario", 303, LocalDate.of(2024, 10, 1))));
+    }
+    private static Stream<Arguments> gerarRequestsVazios() {
+        return Stream.of(Arguments.of(new LivroRequest()),
+                Arguments.of(new LivroRequest(null, null, null, null, null, null)));
+    }
+
+    private static Stream<Arguments> gerarRequestsInvalidos() {
+        return Stream.of(Arguments.of(new LivroRequest("O Cortiço", BigDecimal.valueOf(3.34), "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
+                        " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
+                        " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
+                        " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
+                        " velit sed ullamcorper morbi tincidunt ornare massa eget egestas", "sumario", 0, LocalDate.of(2006, 10, 1))),
+                Arguments.of(new LivroRequest("O Hobbit", BigDecimal.valueOf(17.31),
+                        "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
+                                " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
+                                " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
+                                " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
+                                " velit sed ullamcorper morbi tincidunt ornare massa eget egestas",
+                        "sumario", 99, LocalDate.of(2005, 10, 1))),
+                Arguments.of(new LivroRequest("O ALto da Compadecida", BigDecimal.valueOf(3.34), "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
+                        " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
+                        " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
+                        " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
+                        " velit sed ullamcorper morbi tincidunt ornare massa eget egestas", "sumario", -100, LocalDate.of(2006, 10, 1))));
+    }
+
 
 
 }

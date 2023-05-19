@@ -2,25 +2,15 @@ package br.com.ada.projetofinaltestesautomatizados.models;
 
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
 import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 import java.util.stream.Stream;
-
-
 import static org.junit.jupiter.api.Assertions.*;
-
 
 public class LivroEntityTest {
 
@@ -62,7 +52,6 @@ public class LivroEntityTest {
     @MethodSource("gerarEntities")
     @DisplayName("Deve testar construtor personalizado com valores nulos e nao nulos - Teste unitario")
     void deveTestarValoresNulosENaoNulosDoConstrutorPersonalizado(LivroEntity livroEntity){
-//        LivroEntity livro = new LivroEntity("Lorem Ipsum", BigDecimal.valueOf(50.05), "lorem ipsum", "1. Introdução\n2. Desenvolvimento\n3. Conclusão", 999, LocalDate.of(2033,12,31));;
         assertNotNull(livroEntity.getIsbn());
         assertNotNull(livroEntity.getDisponivel());
         assertNotNull(livroEntity.getCriacao());

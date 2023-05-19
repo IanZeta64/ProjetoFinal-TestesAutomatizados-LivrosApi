@@ -1,48 +1,38 @@
 package br.com.ada.projetofinaltestesautomatizados.controllers;
 
-import br.com.ada.projetofinaltestesautomatizados.exceptions.ExceptionHandlerControllerAdvice;
-import br.com.ada.projetofinaltestesautomatizados.exceptions.LivroNaoEncontradoException;
+import br.com.ada.projetofinaltestesautomatizados.models.LivroEntity;
 import br.com.ada.projetofinaltestesautomatizados.request.LivroRequest;
 import br.com.ada.projetofinaltestesautomatizados.response.LivroResponse;
 import br.com.ada.projetofinaltestesautomatizados.services.LivroServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.context.request.WebRequest;
-
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.web.servlet.function.ServerResponse.status;
 
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -53,29 +43,18 @@ class LivroControllerImplTest {
     @Mock
     private LivroServiceImpl service;
     private MockMvc mockMvc;
-    private LivroRequest livroRequest;
-    private LivroResponse livroResponse;
     private ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        this.livroRequest = new LivroRequest("O Hobbit", BigDecimal.valueOf(77.31), "resumo", "sumario", 202, LocalDate.of(2025,10,1));
-        this.livroResponse = this.livroRequest.toEntity().toResponse();
         this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
-    @Test
+
+    @ParameterizedTest
+    @MethodSource("gerarRequestsInvalidos")
     @DisplayName("Deve retornar bad request - Mock Mvc")
-    void deveRetornarBadRequestMockMvc() throws Exception {
-        LivroRequest livroRequestSemValidacao = new LivroRequest("O Hobbit", BigDecimal.valueOf(17.31),
-                "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
-                        " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
-                        " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
-                        " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
-                        " velit sed ullamcorper morbi tincidunt ornare massa eget egestas",
-                "sumario", 99, LocalDate.of(2005, 10, 1));
-
-
+    void deveRetornarBadRequestMockMvc(LivroRequest livroRequestSemValidacao) throws Exception {
         String livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
 
         this.mockMvc.perform(post("/api/v1/livros")
@@ -84,12 +63,15 @@ class LivroControllerImplTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarRequests")
     @DisplayName("Deve salvar Livro - Mock Mvc")
-    void deveSalvarLivroMockMvc() throws Exception {
+    void deveSalvarLivroMockMvc(LivroRequest livroRequest) throws Exception {
 
         ArgumentCaptor<LivroRequest> requestCaptor = ArgumentCaptor.forClass(LivroRequest.class);
         //Usando para ignorar o atributo gerado automatico de isbn
+
+        LivroResponse livroResponse = livroRequest.toEntity().toResponse();
         doReturn(livroResponse).when(service).salvar(requestCaptor.capture());
 
         String livroRequestJson =  mapper.writeValueAsString(livroRequest);
@@ -103,12 +85,12 @@ class LivroControllerImplTest {
 
         verify(service).salvar(eq(requestCaptor.getValue()));
 
-
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarResponses")
     @DisplayName("Deve buscar Livro pelo ISBN - Mock Mvc")
-    void deveBuscarLivroPeloIsbn() throws Exception {
+    void deveBuscarLivroPeloIsbn(LivroResponse livroResponse) throws Exception {
         String isbn = livroResponse.isbn().toString();
         String livroResponseJson = mapper.writeValueAsString(livroResponse);
 
@@ -122,9 +104,10 @@ class LivroControllerImplTest {
         verify(service).buscarPorIsbn(isbn);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarResponses")
     @DisplayName("Deve buscar Livro por Titulo - Mock Mvc")
-    void deveBuscarLivroPorTitulo() throws Exception {
+    void deveBuscarLivroPorTitulo(LivroResponse livroResponse) throws Exception {
         String titulo = livroResponse.titulo();
         String livroResponseJson = mapper.writeValueAsString(List.of(livroResponse));
 
@@ -138,9 +121,10 @@ class LivroControllerImplTest {
         verify(service).buscarPorTitulo(titulo);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarResponses")
     @DisplayName("Deve buscar Todos os Livros - Mock Mvc")
-    void buscarTodos() throws Exception {
+    void buscarTodos(LivroResponse livroResponse) throws Exception {
         String livroResponseJson = mapper.writeValueAsString(List.of(livroResponse));
 
         doReturn(List.of(livroResponse)).when(service).buscarTodos();
@@ -153,13 +137,15 @@ class LivroControllerImplTest {
         verify(service).buscarTodos();
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarUUID")
     @DisplayName("Deve atualizar livro - Mock Mvc")
-    void deveAtualizarLivroPeloRequest() throws Exception {
+    void deveAtualizarLivroPeloRequest(String isbn) throws Exception {
 
         LivroRequest livroRequestAtualizar = new LivroRequest("O Cortico", BigDecimal.valueOf(22.22), "resumo2", "sumario2", 2022, LocalDate.of(2029,10,1));
-        LivroResponse livroResponseAtualizar = livroRequestAtualizar.toEntity().toResponse();
-        String isbn = livroResponseAtualizar.isbn().toString();
+        LivroEntity livroEntityAtualizar = livroRequestAtualizar.toEntity();
+        livroEntityAtualizar.setIsbn(UUID.fromString(isbn));
+        LivroResponse livroResponseAtualizar = livroEntityAtualizar.toResponse();
         String livroRequestJson =  mapper.writeValueAsString(livroRequestAtualizar);
         String livrResponseJson =  mapper.writeValueAsString(livroResponseAtualizar);
 
@@ -179,14 +165,13 @@ class LivroControllerImplTest {
                 .andExpect(jsonPath("$.numeroPaginas").value(2022))
                 .andExpect(jsonPath("$.dataPublicacao").value("01/10/2029"));
 
-
         verify(service).atualizar(isbn, requestCaptor.getValue());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("gerarUUID")
     @DisplayName("Deve deletar livro - Mock Mvc")
-    void deveDeletarLivroPeloIsbn() throws Exception {
-        String isbn = livroResponse.isbn().toString();
+    void deveDeletarLivroPeloIsbn(String isbn) throws Exception {
         doNothing().when(service).deletar(any());
 
         this.mockMvc.perform(delete("/api/v1/livros/{isbn}", isbn))
@@ -194,6 +179,33 @@ class LivroControllerImplTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         verify(service).deletar(isbn);
+    }
+
+    private static Stream<Arguments> gerarUUID() {
+        return Stream.of(Arguments.of(UUID.randomUUID().toString()), Arguments.of(UUID.randomUUID().toString()), Arguments.of(UUID.randomUUID().toString()));
+    }
+
+    private static Stream<Arguments> gerarRequests() {
+        return Stream.of(Arguments.of(new LivroRequest("O Cortiço", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2026, 10, 1))),
+                Arguments.of(new LivroRequest("O Hobbit", BigDecimal.valueOf(77.31), "resumo", "sumario", 202, LocalDate.of(2025, 10, 1))),
+                Arguments.of(new LivroRequest("O Alto da compadecida", BigDecimal.valueOf(44.85), "resumo", "sumario", 303, LocalDate.of(2024, 10, 1))));
+    }
+
+    private static Stream<Arguments> gerarRequestsInvalidos() {
+        return Stream.of(Arguments.of(new LivroRequest("O Cortiço", BigDecimal.valueOf(3.34), "resumo", "sumario", 101, LocalDate.of(2026, 10, 1))),
+                Arguments.of(new LivroRequest("O Hobbit", BigDecimal.valueOf(17.31),
+                        "nunc mi ipsum faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget felis eget nunc lobortis mattis aliquam faucibus purus in massa tempor" +
+                                " nec feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi" +
+                                " lacus sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat" +
+                                " vivamus at augue eget arcu dictum varius duis at consectetur lorem donec massa sapien faucibus et molestie ac feugiat sed lectus vestibulum mattis ullamcorper" +
+                                " velit sed ullamcorper morbi tincidunt ornare massa eget egestas",
+                        "sumario", 99, LocalDate.of(2005, 10, 1))),
+                Arguments.of(new LivroRequest()));
+    }
+    private static Stream<Arguments> gerarResponses() {
+        return Stream.of(Arguments.of(new LivroRequest("O Cortiço", BigDecimal.valueOf(23.34), "resumo", "sumario", 101, LocalDate.of(2026, 10, 1)).toEntity().toResponse()),
+                Arguments.of(new LivroRequest("O Hobbit", BigDecimal.valueOf(77.31), "resumo", "sumario", 202, LocalDate.of(2025, 10, 1)).toEntity().toResponse()),
+                Arguments.of(new LivroRequest("O Alto da compadecida", BigDecimal.valueOf(44.85), "resumo", "sumario", 303, LocalDate.of(2024, 10, 1)).toEntity().toResponse()));
     }
 
 }
