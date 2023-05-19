@@ -15,4 +15,6 @@ public interface LivroRepository extends JpaRepository<LivroEntity, Long> {
 
     List<LivroEntity> findAllByDisponivelTrue();
 
+    Boolean existsByIsbnAndDisponivelFalse(UUID isbn);
+
 }
