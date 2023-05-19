@@ -31,7 +31,9 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +52,6 @@ class LivroControllerImplTest {
     private LivroControllerImpl controller;
     @Mock
     private LivroServiceImpl service;
-
     private MockMvc mockMvc;
     private LivroRequest livroRequest;
     private LivroResponse livroResponse;
@@ -76,7 +77,6 @@ class LivroControllerImplTest {
 
 
         String livroRequestJson = mapper.writeValueAsString(livroRequestSemValidacao);
-
 
         this.mockMvc.perform(post("/api/v1/livros")
                         .contentType(MediaType.APPLICATION_JSON).content(livroRequestJson))
@@ -183,7 +183,6 @@ class LivroControllerImplTest {
         verify(service).atualizar(isbn, requestCaptor.getValue());
     }
 
-
     @Test
     @DisplayName("Deve deletar livro - Mock Mvc")
     void deveDeletarLivroPeloIsbn() throws Exception {
@@ -196,4 +195,5 @@ class LivroControllerImplTest {
 
         verify(service).deletar(isbn);
     }
+
 }

@@ -21,16 +21,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "livro_tb")
 public class LivroEntity {
-    public LivroEntity(String titulo, BigDecimal preco, String resumo, String sumario, Integer numeroPaginas, LocalDate dataPublicacao) {
-        this.isbn = UUID.randomUUID();
+    public LivroEntity(UUID isbn, String titulo, BigDecimal preco, String resumo, String sumario, Integer numeroPaginas,
+                       LocalDate dataPublicacao, Instant criacao, Boolean disponivel) {
+        this.isbn = isbn;
         this.titulo = titulo;
         this.preco = preco;
         this.resumo = resumo;
         this.sumario = sumario;
         this.numeroPaginas = numeroPaginas;
         this.dataPublicacao = dataPublicacao;
-        this.criacao = Instant.now();
-        this.disponivel = true;
+        this.criacao = criacao;
+        this.disponivel = disponivel;
     }
 
     @Id
