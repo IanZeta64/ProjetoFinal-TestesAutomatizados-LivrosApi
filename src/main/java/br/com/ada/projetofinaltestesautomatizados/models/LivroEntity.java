@@ -39,7 +39,6 @@ public class LivroEntity {
     private Long id;
 
     @Column(name = "isbn")
-//    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID isbn;
 
     @Column(name = "titulo")
@@ -81,17 +80,5 @@ public class LivroEntity {
         setDataPublicacao(livroRequest.getDataPublicacao());
         setModificacao(Instant.now());
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LivroEntity livro)) return false;
-        return getTitulo().equals(livro.getTitulo()) && getDataPublicacao().equals(livro.getDataPublicacao());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTitulo(), getDataPublicacao());
     }
 }
