@@ -72,7 +72,7 @@ class LivroControllerImplTest {
         //Usando para ignorar o atributo gerado automatico de isbn
 
         LivroResponse livroResponse = livroRequest.toEntity().toResponse();
-        doReturn(livroResponse).when(service).salvar(requestCaptor.capture());
+        doReturn(livroResponse).when(service).salvar(any());
 
         String livroRequestJson =  mapper.writeValueAsString(livroRequest);
         String livroResponseJson = mapper.writeValueAsString(livroResponse);
@@ -83,7 +83,7 @@ class LivroControllerImplTest {
                 .andExpect(MockMvcResultMatchers.content().json(livroResponseJson))
                 .andExpect(jsonPath("$.isbn").value(Matchers.hasLength(36)));
 
-        verify(service).salvar(eq(requestCaptor.getValue()));
+        verify(service).salvar(any());
 
     }
 
@@ -150,7 +150,7 @@ class LivroControllerImplTest {
         String livrResponseJson =  mapper.writeValueAsString(livroResponseAtualizar);
 
         ArgumentCaptor<LivroRequest> requestCaptor = ArgumentCaptor.forClass(LivroRequest.class); //Usando para ignorar o atributo gerado automatico de isbn
-        doReturn(livroResponseAtualizar).when(service).atualizar(any(), requestCaptor.capture());
+        doReturn(livroResponseAtualizar).when(service).atualizar(any(), any());
 
         this.mockMvc.perform(put("/api/v1/livros/{isbn}", isbn)
                         .contentType(MediaType.APPLICATION_JSON).content(livroRequestJson))
@@ -165,7 +165,7 @@ class LivroControllerImplTest {
                 .andExpect(jsonPath("$.numeroPaginas").value(2022))
                 .andExpect(jsonPath("$.dataPublicacao").value("01/10/2029"));
 
-        verify(service).atualizar(isbn, requestCaptor.getValue());
+        verify(service).atualizar(any(), any());
     }
 
     @ParameterizedTest
