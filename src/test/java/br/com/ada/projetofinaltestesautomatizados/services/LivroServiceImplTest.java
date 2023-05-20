@@ -93,6 +93,7 @@ class LivroServiceImplTest {
         LivroEntity livroEntity = livroRequest.toEntity();
         doReturn(List.of(livroEntity)).when(livroRepository).findByTituloStartingWithAndDisponivelTrue(anyString());
         List<LivroResponse> livrosRetornados = livroService.buscarPorTitulo(livroEntity.getTitulo().substring(0,3));
+
         for (LivroResponse livroRetornado : livrosRetornados) {
             assertTrue(assertEqualsMethod(livroRequest, livroRetornado));
         }
